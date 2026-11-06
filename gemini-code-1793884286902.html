@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bahçelievler Vali Recep Yazıcıoğlu Ortaokulu - Web Portalı</title>
+    <!-- Google Fonts ve FontAwesome İkonları -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* GİRİŞ EKRANI & BOT KORUMASI */
+        #auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: modalUp 0.3s ease-out;
+        }
+
+        @keyframes modalUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-card .school-logo {
+            width: 70px;
+            height: 70px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 16px auto;
+        }
+
+        .auth-card h2 {
+            font-size: 1.35rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .auth-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .role-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .role-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #f8fafc;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .bot-check-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .bot-check-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .bot-check-box.verified .bot-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .bot-check-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .bot-shield-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover { background: var(--primary-dark); }
+        .btn:active { transform: scale(0.99); }
+
+        /* NAVBAR */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .brand-text h1 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .brand-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-badge {
+            background: #eff6ff;
+            color: var(--primary-dark);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-logout {
+            background: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover { background: #fee2e2; }
+
+        /* ANA İÇERİK */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* SEKME MENÜSÜ */
+        .tab-menu {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 28px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab-menu::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            padding: 12px 18px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .card-box h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .staff-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .staff-item {
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .staff-item strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .staff-item span {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+
+        /* KROKİ VİSUAL TASARIM */
+        .kroki-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media(max-width: 992px) {
+            .kroki-grid { grid-template-columns: 1fr; }
+        }
+
+        .kroki-visual-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .kroki-photo-box {
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .kroki-photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .kroki-map {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .map-block {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            font-size: 0.88rem;
+        }
+
+        .custom-table th, .custom-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .custom-table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .custom-table tr:last-child td { border-bottom: none; }
+
+        .ann-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .delete-ann-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-body {
+            background: white;
+            width: 100%; max-width: 480px;
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+        }
+
+        /* KÜTÜPHANE ÖZEL STİLLERİ */
+        .grade-filter-btns {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .grade-btn {
+            padding: 6px 14px;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .grade-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .book-rec-item {
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .borrow-record-item {
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GÜVENLİ GİRİŞ EKRANI & BOT KORUMASI -->
+    <div id="auth-screen">
+        <div class="auth-card">
+            <div class="school-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h2>Vali Recep Yazıcıoğlu OO</h2>
+            <p>Bahçelievler / İstanbul • Web Portalı</p>
+
+            <div class="role-selector">
+                <button type="button" class="role-btn active" id="btn-mode-student" onclick="setLoginMode('student')">Öğrenci Girişi</button>
+                <button type="button" class="role-btn" id="btn-mode-admin" onclick="setLoginMode('admin')">Yetkili / İdare</button>
+            </div>
+
+            <!-- İDARE GİRİŞ FORMU -->
+            <div id="admin-inputs-form" style="display: none;">
+                <div class="form-group">
+                    <label>Kullanıcı Hesabı</label>
+                    <select id="admin-user-select" onchange="loadSecurityQuestion()">
+                        <option value="">Hesap Seçin...</option>
+                        <option value="mudur">Okul Müdürü (Merve Kavgacı)</option>
+                        <option value="yrd_emine">Müdür Yrd. (Emine Marangoz)</option>
+                        <option value="yrd_ufuk">Müdür Yrd. (Ufuk Aksu)</option>
+                        <option value="yrd_mehmet">Müdür Yrd. (Mehmet Akcan)</option>
+                        <option value="ogrenci_sorumlu">Sorumlu Öğrenci (Duyuru Görevlisi)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Güçlü Şifre</label>
+                    <input type="password" id="admin-pass-input" placeholder="Şifrenizi girin">
+                </div>
+                <div class="form-group" id="sec-question-box" style="display: none;">
+                    <label id="sec-question-title">Güvenlik Sorusu</label>
+                    <input type="text" id="sec-answer-input" placeholder="Cevabınızı girin">
+                </div>
+                <div class="bot-check-box" id="bot-check-card" onclick="verifyBotChallenge()">
+                    <div class="bot-check-left">
+                        <div class="bot-checkbox" id="bot-check-icon"></div>
+                        <span class="bot-check-text" id="bot-check-label">Ben robot değilim (Güvenlik)</span>
+                    </div>
+                    <i class="fa-solid fa-shield-halved bot-shield-icon"></i>
+                </div>
+                <button type="button" class="btn" onclick="handleAdminLogin()">Güvenli Portal Girişi</button>
+            </div>
+
+            <!-- ÖĞRENCİ GİRİŞ FORMU -->
+            <div id="student-inputs-form">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Duyuruları, kütüphane önerilerini ve okul hakkındaki tüm bilgileri inceleyebilirsiniz.</p>
+                <button type="button" class="btn" onclick="handleStudentLogin()">Öğrenci Portalına Gir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="brand-info">
+                <div class="brand-logo"><i class="fa-solid fa-school"></i></div>
+                <div class="brand-text">
+                    <h1>Vali Recep Yazıcıoğlu Ortaokulu</h1>
+                    <p><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Bahçelievler / İstanbul</p>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div class="user-badge" id="nav-user-badge">
+                    <i class="fa-solid fa-user"></i> <span id="user-display-name">Öğrenci Modu</span>
+                </div>
+                <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ANA İÇERİK -->
+    <main class="main-container">
+
+        <!-- SEKME MENÜSÜ -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchTab('tab-announcements', this)"><i class="fa-solid fa-bullhorn"></i> Duyurular</button>
+            <button class="tab-btn" onclick="switchTab('tab-staff', this)"><i class="fa-solid fa-id-badge"></i> Okul Kadrosu</button>
+            <button class="tab-btn" onclick="switchTab('tab-kroki', this)"><i class="fa-solid fa-map"></i> Okul Fotoğrafı & Yerleşke</button>
+            <button class="tab-btn" onclick="switchTab('tab-hours', this)"><i class="fa-solid fa-clock"></i> Ders & Teneffüs</button>
+            <button class="tab-btn" onclick="switchTab('tab-teachers', this)"><i class="fa-solid fa-users"></i> Sınıf Öğretmenleri</button>
+            <button class="tab-btn" onclick="switchTab('tab-library', this)"><i class="fa-solid fa-book"></i> Kütüphane</button>
+            <button class="tab-btn" onclick="switchTab('tab-history', this)"><i class="fa-solid fa-landmark"></i> Okul Hakkında</button>
+        </div>
+
+        <!-- 1. DUYURULAR -->
+        <div id="tab-announcements" class="tab-content active">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-bell" style="color: var(--accent);"></i> Okul Duyuruları</h2>
+                <button class="btn" id="btn-add-ann-modal" style="width: auto; padding: 8px 16px; font-size: 0.85rem; display: none;" onclick="openModal('add-ann-modal')">
+                    <i class="fa-solid fa-plus"></i> Yeni Duyuru Ekle
+                </button>
+            </div>
+            <div class="grid-cards" id="announcements-container"></div>
+        </div>
+
+        <!-- 2. RESMİ OKUL KADROSU -->
+        <div id="tab-staff" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-user-tie" style="color: var(--primary);"></i> Resmi Okul Teşkilat Şeması ve Kadro</h2>
+            </div>
+            <div class="grid-cards">
+                <div class="card-box" style="border-left: 4px solid var(--primary);">
+                    <h3>İdari Kadro</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>Merve Kavgacı</strong><span>Okul Müdürü / Okul Öncesi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>Emine Marangoz</strong><span>Müdür Yardımcısı / Beden Eğitimi</span></div>
+                        <div class="staff-item"><strong>Mehmet Akcan</strong><span>Müdür Yardımcısı / Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>Ufuk Aksu</strong><span>Müdür Yardımcısı / Matematik</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Rehberlik Servisi</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>M.S.</strong><span>Psikolojik Danışman</span></div>
+                        <div class="staff-item"><strong>A.U.</strong><span>Psikolojik Danışman</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Türkçe & Okul Öncesi</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>F.Ö.</strong><span>Türkçe Öğretmeni</span></div>
+                        <div class="staff-item"><strong>İ.U.Ö.</strong><span>Okul Öncesi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>H.F.</strong><span>Okul Öncesi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>K.G.</strong><span>Okul Öncesi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>P.A.</strong><span>Okul Öncesi Öğretmeni</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Matematik Öğretmenleri</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>B.Ş.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>H.A.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>S.K.A.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>E.T.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>T.I.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>O.M.</strong><span>İlköğretim Matematik</span></div>
+                        <div class="staff-item"><strong>T.S.</strong><span>İlköğretim Matematik</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Fen Bilimleri Öğretmenleri</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>Ç.A.G.</strong><span>Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>M.Ş.</strong><span>Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>S.K.</strong><span>Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>B.S.</strong><span>Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>O.G.</strong><span>Fen Bilimleri</span></div>
+                        <div class="staff-item"><strong>B.K.</strong><span>Fen Bilimleri</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Sosyal Bilgiler & İngilizce</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>B.K.</strong><span>Sosyal Bilgiler</span></div>
+                        <div class="staff-item"><strong>H.K.</strong><span>Sosyal Bilgiler</span></div>
+                        <div class="staff-item"><strong>D.K.</strong><span>Sosyal Bilgiler</span></div>
+                        <div class="staff-item"><strong>N.K.</strong><span>Sosyal Bilgiler</span></div>
+                        <div class="staff-item"><strong>Y.K.Ö.</strong><span>İngilizce Öğretmeni</span></div>
+                        <div class="staff-item"><strong>E.H.</strong><span>İngilizce Öğretmeni</span></div>
+                        <div class="staff-item"><strong>M.K.</strong><span>İngilizce Öğretmeni</span></div>
+                        <div class="staff-item"><strong>S.N.K.</strong><span>İngilizce Öğretmeni</span></div>
+                        <div class="staff-item"><strong>H.A.</strong><span>İngilizce Öğretmeni</span></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3>Diğer Branşlar</h3>
+                    <div class="staff-list">
+                        <div class="staff-item"><strong>H.Ö.</strong><span>Din Kültürü ve Ahlak Bilgisi</span></div>
+                        <div class="staff-item"><strong>K.Ş.</strong><span>Beden Eğitimi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>S.B.</strong><span>Beden Eğitimi Öğretmeni</span></div>
+                        <div class="staff-item"><strong>S.G.K.</strong><span>Müzik Öğretmeni</span></div>
+                        <div class="staff-item"><strong>Ö.K.</strong><span>Bilişim Teknolojileri</span></div>
+                        <div class="staff-item"><strong>D.M.</strong><span>Bilişim Teknolojileri</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. OKUL FOTOĞRAFI & YERLEŞKE -->
+        <div id="tab-kroki" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-map-location-dot" style="color: var(--primary);"></i> Okul Yerleşkesi ve Fotoğrafı</h2>
+            </div>
+            
+            <div class="kroki-grid">
+                <div class="kroki-visual-card">
+                    <div class="kroki-photo-box">
+                        <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" alt="Vali Recep Yazıcıoğlu Ortaokulu Bina Görseli">
+                    </div>
+                    <div class="kroki-map">
+                        <h3 style="font-size: 0.95rem; color: var(--text-main); border:none; padding:0;">Bahçe ve Bina Yerleşimi</h3>
+                        <div class="map-block" style="background: #ecfdf5; color: #065f46;">🌳 Okul Bahçesi & Spor Sahası</div>
+                        <div class="map-block">🏢 Zemin Kat (Emine Marangoz - Mdr. Yrd.)</div>
+                        <div class="map-block">🏢 1. Kat (Merve Kavgacı - Müdür & Ufuk Aksu - Mdr. Yrd.)</div>
+                        <div class="map-block">🏢 2. Kat (Mehmet Akcan - Mdr. Yrd. & Derslikler)</div>
+                    </div>
+                </div>
+
+                <div class="card-box" style="display: flex; flex-direction: column; gap: 16px;">
+                    <h3 style="border:none; padding:0;"><i class="fa-solid fa-compass"></i> Konum ve Yerleşke Bilgisi</h3>
+                    <p>Bahçelievler Zafer Mahallesi'nde bulunan okulumuz, geniş bir bahçeye ve modern bir binaya sahiptir. Görseldeki bina, tüm idari odaları ve derslikleri barındırmaktadır.</p>
+                    <p style="font-weight: 500;">Binamızın genel kat dağılımı şu şekildedir:</p>
+                    <ul style="font-size: 0.85rem; color: var(--text-muted); list-style-type: none; padding-left: 8px; display: flex; flex-direction: column; gap: 8px;">
+                        <li><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> <strong>Zemin Kat:</strong> Danışma, Öğrenci İşleri ve İdari Odalar.</li>
+                        <li><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> <strong>1. Kat:</strong> Okul Müdürlüğü ve İdari Odalar.</li>
+                        <li><i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> <strong>2. Kat:</strong> Derslikler ve Eğitim Alanları.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. DERS SAATLERİ -->
+        <div id="tab-hours" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-stopwatch" style="color: var(--primary);"></i> Güncel Ders ve Teneffüs Saatleri</h2>
+            </div>
+            <table class="custom-table">
+                <thead>
+                    <tr><th>Ders / Etkinlik</th><th>Başlangıç</th><th>Bitiş</th><th>Açıklama</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1. Ders</td><td>09:00</td><td>09:40</td><td>Ders Başlangıcı</td></tr>
+                    <tr><td>Teneffüs</td><td>09:40</td><td>09:50</td><td>10 Dakika Teneffüs</td></tr>
+                    <tr><td>2. Ders</td><td>09:50</td><td>10:30</td><td>Ders Saati</td></tr>
+                    <tr><td>Teneffüs</td><td>10:30</td><td>11:30</td><td>Ara / Dinlenme Molası</td></tr>
+                    <tr><td>3. Ders</td><td>11:30</td><td>12:10</td><td>Ders Saati</td></tr>
+                    <tr><td>Teneffüs (Uzun Teneffüs)</td><td>12:10</td><td>12:40</td><td>Uzun Teneffüs / Dinlenme</td></tr>
+                    <tr><td>4. Ders</td><td>12:40</td><td>13:20</td><td>Ders Saati</td></tr>
+                    <tr><td>Teneffüs</td><td>13:20</td><td>13:30</td><td>10 Dakika Teneffüs</td></tr>
+                    <tr><td>5. Ders</td><td>13:30</td><td>14:10</td><td>Ders Saati</td></tr>
+                    <tr><td>Teneffüs</td><td>14:10</td><td>14:20</td><td>10 Dakika Teneffüs</td></tr>
+                    <tr><td>6. Ders</td><td>14:20</td><td>15:00</td><td>Ders Saati ve Çıkış</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 5. SINIF ÖĞRETMENLERİ -->
+        <div id="tab-teachers" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-chalkboard-user" style="color: var(--primary);"></i> Sınıf Şube Bilgileri</h2>
+            </div>
+            <div class="grid-cards">
+                <div class="card-box"><h3 style="border:none; padding:0;">5. Sınıflar</h3><p>Temel eğitim ve ortaokula uyum derslikleri.</p></div>
+                <div class="card-box"><h3 style="border:none; padding:0;">6. Sınıflar</h3><p>Geliştirilmiş branş dersleri ve sosyal etkinlikler.</p></div>
+                <div class="card-box"><h3 style="border:none; padding:0;">7. Sınıflar</h3><p>Bilişim, teknoloji ve proje hazırlık çalışmaları.</p></div>
+                <div class="card-box"><h3 style="border:none; padding:0;">8. Sınıflar</h3><p>LGS hazırlık ve rehberlik odaklı çalışma programı.</p></div>
+            </div>
+        </div>
+
+        <!-- 6. KÜTÜPHANE -->
+        <div id="tab-library" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-book-open-reader" style="color: var(--primary);"></i> Okul Kütüphanesi & Ödünç Sistemi</h2>
+            </div>
+            <div class="grid-cards">
+                
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-filter"></i> Sınıflara Göre Kitap Önerileri</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Seviyene uygun kitapları görmek için sınıf butonuna tıkla:</p>
+                    
+                    <div class="grade-filter-btns">
+                        <button class="grade-btn active" onclick="filterBooks(5, this)">5. Sınıf</button>
+                        <button class="grade-btn" onclick="filterBooks(6, this)">6. Sınıf</button>
+                        <button class="grade-btn" onclick="filterBooks(7, this)">7. Sınıf</button>
+                        <button class="grade-btn" onclick="filterBooks(8, this)">8. Sınıf</button>
+                    </div>
+
+                    <div id="book-list-container" style="max-height: 220px; overflow-y: auto;"></div>
+                </div>
+
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-calendar-check"></i> Ödünç Aldım Bildir</h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px;">Kitap aldığında bilgilerini aşağıdan kaydet:</p>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label style="font-size: 0.72rem;">Şuben (Örn: 6/F)</label>
+                        <input type="text" id="borrow-branch-input" placeholder="Örn: 6/F">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label style="font-size: 0.72rem;">Okul Numaran</label>
+                        <input type="text" id="borrow-no-input" placeholder="Örn: 145">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label style="font-size: 0.72rem;">Adın Soyadın (Örn: Alper Gezgin)</label>
+                        <input type="text" id="borrow-name-input" placeholder="Örn: Alper Gezgin">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label style="font-size: 0.72rem;">Aldığın Kitap</label>
+                        <input type="text" id="borrow-book-input" placeholder="Örn: Marslı">
+                    </div>
+                    <button class="btn" style="padding: 10px; font-size: 0.82rem;" onclick="submitBorrowRecord()">Bildirimi Gönder</button>
+                    <p id="spam-timer-msg" style="font-size: 0.75rem; color: var(--danger); margin-top: 6px; font-weight: 600;"></p>
+                </div>
+
+                <div class="card-box" style="grid-column: span 1 / -1;">
+                    <h3><i class="fa-solid fa-list-check"></i> Ödünç Alanlar Listesi (Şube, No ve Baş Harfler)</h3>
+                    <div id="borrow-list-container" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
+                <div class="card-box" style="grid-column: span 1 / -1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                        <h3 style="border:none; padding:0; margin:0;"><i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Ayın En Çok Okuyanları (İlk 5 Onur Listesi)</h3>
+                        <button class="btn" id="btn-manage-top5" style="width: auto; padding: 4px 10px; font-size: 0.75rem; display: none;" onclick="openModal('top5-modal')"><i class="fa-solid fa-pen"></i> Listeyi Düzenle</button>
+                    </div>
+                    <div id="top5-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 8px;"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 7. OKUL HAKKINDA (GÖRSELLERDEN EKLENEN RESMİ BİLGİLERLE GÜNCELLENDİ) -->
+        <div id="tab-history" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-landmark" style="color: var(--primary);"></i> Okulumuz Hakkında & Kurumsal Bilgiler</h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                
+                <!-- Vizyon & Misyon -->
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-bullseye" style="color: var(--primary);"></i> Vizyonumuz</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                        Yarını tasarlayan, sahip olduğu doğal ve kültürel değerlere önem veren, ortaya çıkan fırsatları etkin, yaratıcı ve yenilikçi yaklaşımlarla değerlendiren bir eğitim anlayışına sahip olmak[cite: 3].
+                    </p>
+                    <h3><i class="fa-solid fa-flag" style="color: var(--primary);"></i> Misyonumuz</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                        Üretken, insan ve doğa sevgisi ile donanmış, öz güveni olan, bilimsel düşünebilen ve gerçekçi kararlar alabilen, sorumluluklarının bilincinde, değişime ve gelişime açık, teknolojik gelişmelere hakim, bedensel, duygusal ve sosyal yeteneklerini geliştiren, ülke ve dünya barışına ve refahına katkı sağlayan, geleceğin nitelikli bireylerini yetiştirmektir[cite: 3].
+                    </p>
+                </div>
+
+                <!-- Mevcut Durum & İstatistikler -->
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Mevcut Durum ve İstatistikler</h3>
+                    <ul style="font-size: 0.85rem; color: var(--text-muted); list-style-type: none; display: flex; flex-direction: column; gap: 8px;">
+                        <li><i class="fa-solid fa-user-tie" style="color: var(--primary);"></i> <strong>Öğretmen Sayısı:</strong> 51[cite: 5]</li>
+                        <li><i class="fa-solid fa-user-graduate" style="color: var(--primary);"></i> <strong>Öğrenci Sayısı:</strong> 1091[cite: 5]</li>
+                        <li><i class="fa-solid fa-school" style="color: var(--primary);"></i> <strong>Derslik Sayısı:</strong> 33[cite: 5]</li>
+                        <li><i class="fa-solid fa-book" style="color: var(--primary);"></i> <strong>Kütüphane Kitap Sayısı:</strong> 2402[cite: 5]</li>
+                        <li><i class="fa-solid fa-laptop" style="color: var(--primary);"></i> <strong>BT Sınıfı:</strong> 1[cite: 5]</li>
+                        <li><i class="fa-solid fa-network-wired" style="color: var(--primary);"></i> <strong>Bağlantı:</strong> Fatih Projesi Fiber İnternet[cite: 3]</li>
+                        <li><i class="fa-solid fa-clock" style="color: var(--primary);"></i> <strong>Öğretim Şekli:</strong> Tam Gün Tekli Eğitim (09:00 - 15:35)[cite: 3, 5]</li>
+                    </ul>
+                </div>
+
+                <!-- Başarılar -->
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-award" style="color: var(--accent);"></i> Önemli Başarılarımız</h3>
+                    <ul style="font-size: 0.85rem; color: var(--text-muted); list-style-type: none; display: flex; flex-direction: column; gap: 10px;">
+                        <li>🏆 <strong>Sağlıklı Nesil Sağlıklı Gelecek:</strong> Slogan Yarışması İlçe 1.liği[cite: 3]</li>
+                        <li>🏆 <strong>Çanakkale Savaşları:</strong> 100. Yıldönümü Kompozisyon Yarışması İlçe 1.liği[cite: 3]</li>
+                        <li>🏆 <strong>Trafik Konulu Şiir:</strong> Şiir Yarışması İlçe 1.liği[cite: 3]</li>
+                    </ul>
+                </div>
+
+                <!-- İletişim & Ulaşım -->
+                <div class="card-box">
+                    <h3><i class="fa-solid fa-address-book" style="color: var(--primary);"></i> İletişim & Ulaşım Bilgileri</h3>
+                    <ul style="font-size: 0.85rem; color: var(--text-muted); list-style-type: none; display: flex; flex-direction: column; gap: 8px;">
+                        <li><i class="fa-solid fa-phone" style="color: var(--primary);"></i> <strong>Telefon:</strong> 0212 654 52 04[cite: 4]</li>
+                        <li><i class="fa-solid fa-globe" style="color: var(--primary);"></i> <strong>Web:</strong> <a href="https://valirecepyazicioglu.meb.k12.tr" target="_blank">valirecepyazicioglu.meb.k12.tr</a>[cite: 4]</li>
+                        <li><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> <strong>Adres:</strong> Zafer Mh. Emir Sultan Sk. No.5 Bahçelievler / İstanbul[cite: 4]</li>
+                        <li><i class="fa-solid fa-train" style="color: var(--primary);"></i> <strong>Konum:</strong> Kocasinan İtfaiyesi'nin hemen arka sokağında yer almaktadır[cite: 6].</li>
+                        <li><i class="fa-solid fa-road" style="color: var(--primary);"></i> <strong>Uzaklık:</strong> İl merkezine 8 km, İlçe merkezine 2 km mesafededir[cite: 6].</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- DUYURU EKLEME MODALI -->
+    <div class="modal-overlay" id="add-ann-modal">
+        <div class="modal-body">
+            <h3>Yeni Okul Duyurusu Yayınla</h3>
+            <div class="form-group"><label>Duyuru Başlığı</label><input type="text" id="ann-title-input" placeholder="Örn: Kütüphane Etkinliği"></div>
+            <div class="form-group"><label>Kategori</label>
+                <select id="ann-cat-select">
+                    <option value="Kütüphane">Kütüphane</option>
+                    <option value="Teknofest / Robotik">Teknofest / Robotik</option>
+                    <option value="Sınav Takvimi">Sınav Takvimi</option>
+                    <option value="Veli Toplantısı">Veli Toplantısı</option>
+                    <option value="Genel Duyuru">Genel Duyuru</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Duyuru Detayı</label><input type="text" id="ann-text-input" placeholder="Açıklama metnini girin..."></div>
+            <button type="button" class="btn" onclick="saveAnnouncement()" style="margin-bottom: 10px;">Yayınla</button>
+            <button type="button" class="btn" onclick="closeModal('add-ann-modal')" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);">İptal</button>
+        </div>
+    </div>
+
+    <!-- İLK 5 LİDERLİK DÜZENLEME MODALI -->
+    <div class="modal-overlay" id="top5-modal">
+        <div class="modal-body">
+            <h3>Ayın İlk 5 Okuyucusunu Düzenle</h3>
+            <div class="form-group"><label>1. Sıra</label><input type="text" id="top1-input" value="7/B - A. G. (14 Kitap)"></div>
+            <div class="form-group"><label>2. Sıra</label><input type="text" id="top2-input" value="6/A - Z. K. (11 Kitap)"></div>
+            <div class="form-group"><label>3. Sıra</label><input type="text" id="top3-input" value="5/C - M. D. (9 Kitap)"></div>
+            <div class="form-group"><label>4. Sıra</label><input type="text" id="top4-input" value="8/D - E. Y. (8 Kitap)"></div>
+            <div class="form-group"><label>5. Sıra</label><input type="text" id="top5-input" value="6/C - K. Ş. (7 Kitap)"></div>
+            <button type="button" class="btn" onclick="saveTop5()" style="margin-bottom: 10px;">Listeyi Güncelle</button>
+            <button type="button" class="btn" onclick="closeModal('top5-modal')" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);">İptal</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Bahçelievler Vali Recep Yazıcıoğlu Ortaokulu © 2026 • Tüm Hakları Saklıdır.
+    </footer>
+
+    <script>
+        const gradeBooks = {
+            5: [
+                { name: "Charlie'nin Çikolata Fabrikası", author: "Roald Dahl" },
+                { name: "Kral Şakir", author: "Varol Yaşaroğlu" },
+                { name: "Kırmızı Bisiklet", author: "Muzaffer İzgü" }
+            ],
+            6: [
+                { name: "Matilda", author: "Roald Dahl" },
+                { name: "Pıtırcık Serisi", author: "Goscinny & Sempé" },
+                { name: "Öakçalı Günlükleri", author: "Gülten Dayıoğlu" }
+            ],
+            7: [
+                { name: "Marslı", author: "Andy Weir" },
+                { name: "Felsefe Taşı", author: "J.K. Rowling" },
+                { name: "Çocuk Kalbi", author: "Edmondo De Amicis" }
+            ],
+            8: [
+                { name: "Nutuk", author: "Mustafa Kemal Atatürk" },
+                { name: "Beyaz Diş", author: "Jack London" },
+                { name: "Kuyucaklı Yusuf", author: "Sabahattin Ali" }
+            ]
+        };
+
+        function filterBooks(grade, btn) {
+            document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const container = document.getElementById('book-list-container');
+            container.innerHTML = "";
+
+            gradeBooks[grade].forEach(book => {
+                const div = document.createElement('div');
+                div.className = 'book-rec-item';
+                div.innerHTML = `<strong>📚 ${book.name}</strong><br><span style="color: var(--text-muted); font-size: 0.78rem;">Yazar: ${book.author}</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function formatNameInitials(fullName) {
+            const parts = fullName.trim().split(" ");
+            if (parts.length === 1) return parts[0].charAt(0).toUpperCase() + ".";
+            const firstNameInitial = parts[0].charAt(0).toUpperCase() + ".";
+            const lastNameInitial = parts[parts.length - 1].charAt(0).toUpperCase() + ".";
+            return `${firstNameInitial} ${lastNameInitial}`;
+        }
+
+        function submitBorrowRecord() {
+            const lastTime = localStorage.getItem("vr_last_borrow_time");
+            const now = Date.now();
+            const oneHour = 60 * 60 * 1000;
+            const msgEl = document.getElementById('spam-timer-msg');
+
+            if (lastTime && (now - lastTime < oneHour)) {
+                const remMin = Math.ceil((oneHour - (now - lastTime)) / (60 * 1000));
+                msgEl.innerText = `Güvenlik Uyarısı: Spam engellemek için yeni kayıt atmak adına ${remMin} dakika beklemelisin!`;
+                return;
+            }
+
+            const branch = document.getElementById('borrow-branch-input').value.trim();
+            const no = document.getElementById('borrow-no-input').value.trim();
+            const rawName = document.getElementById('borrow-name-input').value.trim();
+            const book = document.getElementById('borrow-book-input').value.trim();
+
+            if(!branch || !no || !rawName || !book) {
+                alert("Lütfen tüm alanları (Şube, No, Ad Soyad, Kitap) eksiksiz doldur!");
+                return;
+            }
+
+            const initials = formatNameInitials(rawName);
+
+            let records = JSON.parse(localStorage.getItem("vr_borrow_records_v2") || "[]");
+            records.unshift({ branch: branch, no: no, nameInitials: initials, book: book, date: "Bugün" });
+            if(records.length > 10) records.pop();
+
+            localStorage.setItem("vr_borrow_records_v2", JSON.stringify(records));
+            localStorage.setItem("vr_last_borrow_time", now);
+
+            msgEl.innerText = "";
+            document.getElementById('borrow-branch-input').value = "";
+            document.getElementById('borrow-no-input').value = "";
+            document.getElementById('borrow-name-input').value = "";
+            document.getElementById('borrow-book-input').value = "";
+
+            alert("Ödünç kaydın başarıyla eklendi!");
+            loadBorrowRecords();
+        }
+
+        function loadBorrowRecords() {
+            const container = document.getElementById('borrow-list-container');
+            let records = JSON.parse(localStorage.getItem("vr_borrow_records_v2") || JSON.stringify([
+                { branch: "6/F", no: "145", nameInitials: "A. G.", book: "Marslı", date: "Bugün" },
+                { branch: "7/B", no: "89", nameInitials: "Z. K.", book: "Küçük Prens", date: "Dün" }
+            ]));
+
+            container.innerHTML = "";
+            records.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'borrow-record-item';
+                div.innerHTML = `
+                    <div>
+                        <strong style="color: var(--primary-dark);">${r.branch} - No: ${r.no} - ${r.nameInitials}</strong><br>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">📖 Kitap: ${r.book}</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--success); font-weight: 700;">İade: ${r.date}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function loadTop5() {
+            const container = document.getElementById('top5-container');
+            let top5 = JSON.parse(localStorage.getItem("vr_top5_readers") || JSON.stringify([
+                "🥇 7/B - A. G. (14 Kitap)",
+                "🥈 6/A - Z. K. (11 Kitap)",
+                "🥉 5/C - M. D. (9 Kitap)",
+                "4️⃣ 8/D - E. Y. (8 Kitap)",
+                "5️⃣ 6/C - K. Ş. (7 Kitap)"
+            ]));
+
+            container.innerHTML = "";
+            top5.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.style.background = index === 0 ? '#eff6ff' : (index === 1 ? '#f8fafc' : '#fff7ed');
+                div.style.padding = '10px 14px';
+                div.style.borderRadius = '10px';
+                div.style.fontSize = '0.85rem';
+                div.style.fontWeight = '700';
+                div.style.color = index === 0 ? 'var(--primary-dark)' : (index === 2 ? '#c2410c' : 'var(--text-main)');
+                div.innerText = item;
+                container.appendChild(div);
+            });
+        }
+
+        function saveTop5() {
+            const t1 = document.getElementById('top1-input').value;
+            const t2 = document.getElementById('top2-input').value;
+            const t3 = document.getElementById('top3-input').value;
+            const t4 = document.getElementById('top4-input').value;
+            const t5 = document.getElementById('top5-input').value;
+
+            const newTop5 = [t1, t2, t3, t4, t5];
+            localStorage.setItem("vr_top5_readers", JSON.stringify(newTop5));
+            closeModal('top5-modal');
+            loadTop5();
+            alert("Onur listesi güncellendi!");
+        }
+
+        let requestTracker = [];
+        function checkSecurityFirewall() {
+            const now = Date.now();
+            requestTracker = requestTracker.filter(time => now - time < 5000);
+            requestTracker.push(now);
+            if(requestTracker.length > 6) {
+                alert("Sistem Güvenliği: Çok fazla istek yapıldı!");
+                return false;
+            }
+            return true;
+        }
+
+        const databaseUsers = {
+            "mudur": { pass: "Mudur@2026!", question: "Okulun bulunduğu ilçe nedir?", answer: "bahçelievler", roleName: "Okul Müdürü (Merve Kavgacı)" },
+            "yrd_emine": { pass: "Emine#987!", question: "Müdür yardımcısının adı nedir?", answer: "emine", roleName: "Müdür Yrd. (Emine Marangoz)" },
+            "yrd_ufuk": { pass: "Ufuk$543!", question: "Okulun bağlı olduğu il nedir?", answer: "istanbul", roleName: "Müdür Yrd. (Ufuk Aksu)" },
+            "yrd_mehmet": { pass: "Mehmet&321!", question: "Okulumuz hangi valimizin adını taşır?", answer: "recep yazıcıoğlu", roleName: "Müdür Yrd. (Mehmet Akcan)" },
+            "ogrenci_sorumlu": { pass: "Sorumlu#2026", question: "Robotik yarışmasının adı nedir?", answer: "teknofest", roleName: "Sorumlu Öğrenci (Duyuru Görevlisi)" }
+        };
+
+        let isBotVerified = false;
+
+        function setLoginMode(mode) {
+            document.getElementById('btn-mode-student').classList.toggle('active', mode === 'student');
+            document.getElementById('btn-mode-admin').classList.toggle('active', mode === 'admin');
+            
+            if(mode === 'student') {
+                document.getElementById('admin-inputs-form').style.display = 'none';
+                document.getElementById('student-inputs-form').style.display = 'block';
+            } else {
+                document.getElementById('admin-inputs-form').style.display = 'block';
+                document.getElementById('student-inputs-form').style.display = 'none';
+            }
+        }
+
+        function loadSecurityQuestion() {
+            const userKey = document.getElementById("admin-user-select").value;
+            const box = document.getElementById("sec-question-box");
+            if(userKey && databaseUsers[userKey]) {
+                box.style.display = "block";
+                document.getElementById("sec-question-title").innerText = "Güvenlik Sorusu: " + databaseUsers[userKey].question;
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        function verifyBotChallenge() {
+            const card = document.getElementById("bot-check-card");
+            const icon = document.getElementById("bot-check-icon");
+            const label = document.getElementById("bot-check-label");
+
+            label.innerText = "Doğrulanıyor...";
+            setTimeout(() => {
+                isBotVerified = true;
+                card.classList.add("verified");
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                label.innerText = "İnsan Doğrulaması Başarılı";
+            }, 600);
+        }
+
+        function handleStudentLogin() {
+            if(!checkSecurityFirewall()) return;
+            sessionStorage.setItem("userRole", "student");
+            sessionStorage.setItem("userName", "Öğrenci Modu");
+            initPortal();
+        }
+
+        function handleAdminLogin() {
+            if(!checkSecurityFirewall()) return;
+
+            const userKey = document.getElementById("admin-user-select").value;
+            const pass = document.getElementById("admin-pass-input").value;
+            const answer = document.getElementById("sec-answer-input").value.trim().toLowerCase();
+
+            if(!userKey || !databaseUsers[userKey]) {
+                alert("Lütfen hesap seçin!");
+                return;
+            }
+            if(pass !== databaseUsers[userKey].pass) {
+                alert("Hatalı şifre!");
+                return;
+            }
+            if(answer !== databaseUsers[userKey].answer) {
+                alert("Güvenlik sorusu cevabı hatalı!");
+                return;
+            }
+            if(!isBotVerified) {
+                alert("Lütfen 'Ben robot değilim' doğrulamasını yapın!");
+                return;
+            }
+
+            sessionStorage.setItem("userRole", "admin");
+            sessionStorage.setItem("userName", databaseUsers[userKey].roleName);
+            initPortal();
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            location.reload();
+        }
+
+        window.onload = function() {
+            const role = sessionStorage.getItem("userRole");
+            if(role) { initPortal(); }
+            filterBooks(5, document.querySelector('.grade-btn'));
+            loadBorrowRecords();
+            loadTop5();
+        }
+
+        function initPortal() {
+            document.getElementById("auth-screen").style.display = "none";
+            const role = sessionStorage.getItem("userRole");
+            const name = sessionStorage.getItem("userName");
+            
+            document.getElementById("user-display-name").innerText = name;
+            if(role === 'admin') {
+                document.getElementById("btn-add-ann-modal").style.display = "inline-flex";
+                document.getElementById("btn-manage-top5").style.display = "inline-block";
+            }
+            loadAnnouncements();
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function getAnnouncements() {
+            let anns = localStorage.getItem("vr_announcements_db_v12");
+            if(!anns) {
+                anns = JSON.stringify([
+                    { id: 1, title: "Okul Hakkında ve Kurumsal Bilgiler Güncellendi", category: "Genel Duyuru", text: "Vizyon, misyon, mevcut durum istatistikleri ve iletişim bilgileri okul hakkında sekmesine eklendi.", date: "Bugün" }
+                ]);
+                localStorage.setItem("vr_announcements_db_v12", anns);
+            }
+            return JSON.parse(anns);
+        }
+
+        function loadAnnouncements() {
+            const container = document.getElementById("announcements-container");
+            const anns = getAnnouncements();
+            const isAdmin = sessionStorage.getItem("userRole") === 'admin';
+
+            container.innerHTML = "";
+            anns.forEach(ann => {
+                const card = document.createElement("div");
+                card.className = "ann-card";
+                card.innerHTML = `
+                    ${isAdmin ? `<button class="delete-ann-btn" onclick="deleteAnnouncement(${ann.id})" title="Duyuruyu Sil"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; padding-right:25px;">
+                            <h3 style="font-size:1rem; font-weight:700;">${ann.title}</h3>
+                            <span style="font-size:0.75rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; font-weight:600; color:var(--text-muted);">${ann.date}</span>
+                        </div>
+                        <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5; margin-bottom:16px;">${ann.text}</p>
+                    </div>
+                    <div style="padding-top:12px; border-top:1px solid #f1f5f9;">
+                        <span style="background:#eff6ff; color:var(--primary-dark); font-size:0.75rem; font-weight:700; padding:4px 10px; border-radius:8px;">${ann.category}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function saveAnnouncement() {
+            const title = document.getElementById("ann-title-input").value.trim();
+            const category = document.getElementById("ann-cat-select").value;
+            const text = document.getElementById("ann-text-input").value.trim();
+
+            if(!title || !text) {
+                alert("Lütfen tüm alanları doldurun!");
+                return;
+            }
+
+            let anns = getAnnouncements();
+            anns.unshift({ id: Date.now(), title, category, text, date: "Bugün" });
+
+            localStorage.setItem("vr_announcements_db_v12", JSON.stringify(anns));
+            closeModal('add-ann-modal');
+            loadAnnouncements();
+
+            document.getElementById("ann-title-input").value = "";
+            document.getElementById("ann-text-input").value = "";
+        }
+
+        function deleteAnnouncement(id) {
+            if(confirm("Bu duyuruyu silmek istediğinize emin misiniz?")) {
+                let anns = getAnnouncements();
+                anns = anns.filter(a => a.id !== id);
+                localStorage.setItem("vr_announcements_db_v12", JSON.stringify(anns));
+                loadAnnouncements();
+            }
+        }
+    </script>
+</body>
+</html>
